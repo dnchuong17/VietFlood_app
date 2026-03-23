@@ -1,0 +1,16 @@
+{
+  "name": "Next PWA Starter",
+  "short_name": "NextPWA",
+  "description": "A Next.js project with Progressive Web App support",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#111827",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48 32x32 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}
