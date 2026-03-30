@@ -18,9 +18,12 @@ type UserReport = {
     };
     category?: string[];
     description?: string;
+    evidences?: ReportEvidence[];
     province?: string;
     ward?: string;
     addressLine?: string;
+    lat?: number | string;
+    lng?: number | string;
     status?: string;
     isUrgent?: boolean;
     severity?: number;
@@ -38,6 +41,12 @@ type AccessTokenPayload = {
     username?: string;
 };
 
+type ReportEvidence = {
+    url: string;
+    publicId: string;
+    resourceType?: string;
+};
+
 type EditReportFormState = {
     categoryText: string;
     description: string;
@@ -46,7 +55,7 @@ type EditReportFormState = {
     addressLine: string;
     lat: string;
     lng: string;
-    isUrgent: boolean;
+    newFiles: File[];
 };
 
 const EDIT_DELETE_TIME_LIMIT_HOURS = 12;
@@ -118,20 +127,6 @@ function formatReportCategory(category?: string[]): string {
         .join(" • ");
 }
 
-function parseOptionalNumber(value: string): number | null {
-    const normalized = value.trim();
-    if (!normalized) {
-        return null;
-    }
-
-    const parsed = Number(normalized);
-    if (!Number.isFinite(parsed)) {
-        return null;
-    }
-
-    return parsed;
-}
-
 function isEditOrDeleteAllowedByCreatedAt(createdAt?: string): boolean {
     if (!createdAt) {
         return false;
@@ -153,9 +148,15 @@ function createEditFormState(report: UserReport): EditReportFormState {
         province: report.province?.trim() ?? "",
         ward: report.ward?.trim() ?? "",
         addressLine: report.addressLine?.trim() ?? "",
-        lat: "",
-        lng: "",
-        isUrgent: Boolean(report.isUrgent),
+        lat:
+            report.lat !== undefined && report.lat !== null
+                ? String(report.lat)
+                : "",
+        lng:
+            report.lng !== undefined && report.lng !== null
+                ? String(report.lng)
+                : "",
+        newFiles: [],
     };
 }
 
@@ -259,6 +260,11 @@ export function ReportHistoryView() {
             ).length,
         }),
         [reportHistory],
+    );
+
+    const selectedEditFileNames = useMemo(
+        () => (editForm ? editForm.newFiles.map((file) => file.name).join(", ") : ""),
+        [editForm],
     );
 
     const loadReportHistory = useCallback(async () => {
@@ -466,20 +472,6 @@ export function ReportHistoryView() {
             return;
         }
 
-        const categories = editForm.categoryText
-            .split(",")
-            .map((item) => item.trim())
-            .filter(Boolean);
-
-        if (categories.length === 0) {
-            showAlert({
-                title: "Thiếu loại báo cáo",
-                description: "Vui lòng nhập ít nhất một loại báo cáo.",
-                variant: "error",
-            });
-            return;
-        }
-
         if (!editForm.description.trim()) {
             showAlert({
                 title: "Thiếu mô tả",
@@ -489,51 +481,11 @@ export function ReportHistoryView() {
             return;
         }
 
-        if (!editForm.province.trim() || !editForm.ward.trim() || !editForm.addressLine.trim()) {
-            showAlert({
-                title: "Thiếu địa chỉ",
-                description: "Vui lòng nhập tỉnh/thành, phường/xã và địa chỉ cụ thể.",
-                variant: "error",
-            });
-            return;
-        }
+        const payload = new FormData();
+        payload.append("description", editForm.description.trim());
 
-        const lat = parseOptionalNumber(editForm.lat);
-        const lng = parseOptionalNumber(editForm.lng);
-
-        if (editForm.lat.trim() && lat === null) {
-            showAlert({
-                title: "Vĩ độ không hợp lệ",
-                description: "Vui lòng nhập vĩ độ là số hợp lệ.",
-                variant: "error",
-            });
-            return;
-        }
-
-        if (editForm.lng.trim() && lng === null) {
-            showAlert({
-                title: "Kinh độ không hợp lệ",
-                description: "Vui lòng nhập kinh độ là số hợp lệ.",
-                variant: "error",
-            });
-            return;
-        }
-
-        const payload: Record<string, unknown> = {
-            category: categories,
-            description: editForm.description.trim(),
-            province: editForm.province.trim(),
-            ward: editForm.ward.trim(),
-            addressLine: editForm.addressLine.trim(),
-            isUrgent: editForm.isUrgent,
-        };
-
-        if (lat !== null) {
-            payload.lat = lat;
-        }
-
-        if (lng !== null) {
-            payload.lng = lng;
+        for (const file of editForm.newFiles) {
+            payload.append("files", file);
         }
 
         try {
@@ -544,10 +496,7 @@ export function ReportHistoryView() {
                 {
                     method: "PUT",
                     credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(payload),
+                    body: payload,
                 },
             );
 
@@ -583,12 +532,7 @@ export function ReportHistoryView() {
 
                     return {
                         ...item,
-                        category: categories,
                         description: editForm.description.trim(),
-                        province: editForm.province.trim(),
-                        ward: editForm.ward.trim(),
-                        addressLine: editForm.addressLine.trim(),
-                        isUrgent: editForm.isUrgent,
                     };
                 }),
             );
@@ -759,19 +703,12 @@ export function ReportHistoryView() {
                                         </p>
 
                                         <label className="block space-y-1">
-                                            <span className="text-xs font-semibold text-slate-700">Loại báo cáo (phân tách bởi dấu phẩy)</span>
+                                            <span className="text-xs font-semibold text-slate-700">Loại báo cáo</span>
                                             <input
                                                 type="text"
                                                 value={editForm.categoryText}
-                                                onChange={(event) =>
-                                                    setEditForm((prev) =>
-                                                        prev
-                                                            ? { ...prev, categoryText: event.target.value }
-                                                            : prev,
-                                                    )
-                                                }
-                                                disabled={isUpdatingReport}
-                                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100 disabled:cursor-not-allowed disabled:opacity-60"
+                                                disabled
+                                                className="w-full rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-500 outline-none disabled:cursor-not-allowed"
                                             />
                                         </label>
 
@@ -798,15 +735,8 @@ export function ReportHistoryView() {
                                                 <input
                                                     type="text"
                                                     value={editForm.province}
-                                                    onChange={(event) =>
-                                                        setEditForm((prev) =>
-                                                            prev
-                                                                ? { ...prev, province: event.target.value }
-                                                                : prev,
-                                                        )
-                                                    }
-                                                    disabled={isUpdatingReport}
-                                                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100 disabled:cursor-not-allowed disabled:opacity-60"
+                                                    disabled
+                                                    className="w-full rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-500 outline-none disabled:cursor-not-allowed"
                                                 />
                                             </label>
                                             <label className="block space-y-1">
@@ -814,15 +744,8 @@ export function ReportHistoryView() {
                                                 <input
                                                     type="text"
                                                     value={editForm.ward}
-                                                    onChange={(event) =>
-                                                        setEditForm((prev) =>
-                                                            prev
-                                                                ? { ...prev, ward: event.target.value }
-                                                                : prev,
-                                                        )
-                                                    }
-                                                    disabled={isUpdatingReport}
-                                                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100 disabled:cursor-not-allowed disabled:opacity-60"
+                                                    disabled
+                                                    className="w-full rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-500 outline-none disabled:cursor-not-allowed"
                                                 />
                                             </label>
                                         </div>
@@ -832,68 +755,55 @@ export function ReportHistoryView() {
                                             <input
                                                 type="text"
                                                 value={editForm.addressLine}
-                                                onChange={(event) =>
-                                                    setEditForm((prev) =>
-                                                        prev
-                                                            ? { ...prev, addressLine: event.target.value }
-                                                            : prev,
-                                                    )
-                                                }
-                                                disabled={isUpdatingReport}
-                                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100 disabled:cursor-not-allowed disabled:opacity-60"
+                                                disabled
+                                                className="w-full rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-500 outline-none disabled:cursor-not-allowed"
                                             />
                                         </label>
 
                                         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                                             <label className="block space-y-1">
-                                                <span className="text-xs font-semibold text-slate-700">Vĩ độ (tuỳ chọn)</span>
+                                                <span className="text-xs font-semibold text-slate-700">Vĩ độ</span>
                                                 <input
                                                     type="text"
                                                     value={editForm.lat}
-                                                    onChange={(event) =>
-                                                        setEditForm((prev) =>
-                                                            prev
-                                                                ? { ...prev, lat: event.target.value }
-                                                                : prev,
-                                                        )
-                                                    }
-                                                    disabled={isUpdatingReport}
-                                                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100 disabled:cursor-not-allowed disabled:opacity-60"
+                                                    disabled
+                                                    className="w-full rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-500 outline-none disabled:cursor-not-allowed"
                                                 />
                                             </label>
                                             <label className="block space-y-1">
-                                                <span className="text-xs font-semibold text-slate-700">Kinh độ (tuỳ chọn)</span>
+                                                <span className="text-xs font-semibold text-slate-700">Kinh độ</span>
                                                 <input
                                                     type="text"
                                                     value={editForm.lng}
-                                                    onChange={(event) =>
-                                                        setEditForm((prev) =>
-                                                            prev
-                                                                ? { ...prev, lng: event.target.value }
-                                                                : prev,
-                                                        )
-                                                    }
-                                                    disabled={isUpdatingReport}
-                                                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100 disabled:cursor-not-allowed disabled:opacity-60"
+                                                    disabled
+                                                    className="w-full rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-500 outline-none disabled:cursor-not-allowed"
                                                 />
                                             </label>
                                         </div>
 
-                                        <label className="inline-flex items-center gap-2">
+                                        <label className="block space-y-1">
+                                            <span className="text-xs font-semibold text-slate-700">Ảnh/Video minh chứng mới (tối đa 5)</span>
                                             <input
-                                                type="checkbox"
-                                                checked={editForm.isUrgent}
-                                                onChange={(event) =>
+                                                type="file"
+                                                multiple
+                                                accept="image/*,video/*"
+                                                onChange={(event) => {
+                                                    const files = event.target.files ? Array.from(event.target.files).slice(0, 5) : [];
                                                     setEditForm((prev) =>
                                                         prev
-                                                            ? { ...prev, isUrgent: event.target.checked }
+                                                            ? { ...prev, newFiles: files }
                                                             : prev,
-                                                    )
-                                                }
+                                                    );
+                                                }}
                                                 disabled={isUpdatingReport}
-                                                className="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
+                                                className="block w-full text-sm text-slate-700 file:mr-3 file:rounded-lg file:border-0 file:bg-sky-100 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-sky-800 hover:file:bg-sky-200 disabled:cursor-not-allowed disabled:opacity-60"
                                             />
-                                            <span className="text-xs font-semibold text-slate-700">Đánh dấu khẩn cấp</span>
+                                            <p className="text-xs text-slate-500">
+                                                Ảnh/Video hiện có: {report.evidences?.length ?? 0} tệp.
+                                            </p>
+                                            {selectedEditFileNames ? (
+                                                <p className="text-xs text-slate-500">Đã chọn thêm: {selectedEditFileNames}</p>
+                                            ) : null}
                                         </label>
 
                                         <div className="flex justify-end gap-2 pt-1">
