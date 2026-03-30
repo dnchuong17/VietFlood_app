@@ -1,4 +1,4 @@
-import { ReportCreateForm } from "@/features/reports/components/report-create-form";
+import { ReportTabsView } from "@/features/reports/components/report-tabs-view";
 
 export const metadata = {
     title: "Báo cáo | VietFlood Insight",
@@ -6,6 +6,6 @@ export const metadata = {
 
 export default function ReportPage() {
     return (
-        <ReportCreateForm />
+        <ReportTabsView />
     );
 }

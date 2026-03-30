@@ -76,6 +76,7 @@ function formatDate(value?: string): string {
     }).format(date);
 }
 
+
 function getFullName(profile: AuthProfile | null): string {
     if (!profile) {
         return "Người dùng";
