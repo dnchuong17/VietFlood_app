@@ -1,11 +1,22 @@
 import type { NextConfig } from "next";
 import withPWAInit from "next-pwa";
-import { RuntimeCaching } from "next-pwa/cache";
 
-const runtimeCaching: RuntimeCaching[] = [
+type RuntimeCachingRule = {
+  urlPattern: RegExp;
+  handler:
+      | "NetworkOnly"
+      | "CacheFirst"
+      | "NetworkFirst"
+      | "StaleWhileRevalidate";
+  options?: {
+    cacheName?: string;
+  };
+};
+
+const runtimeCaching: RuntimeCachingRule[] = [
   {
     urlPattern:
-      /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+):8081\/auth\/.*$/,
+        /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+):8081\/auth\/.*$/,
     handler: "NetworkOnly",
     options: {
       cacheName: "auth-api-network-only",
@@ -13,7 +24,7 @@ const runtimeCaching: RuntimeCaching[] = [
   },
   {
     urlPattern:
-      /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+):8081\/.*$/,
+        /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+):8081\/.*$/,
     handler: "NetworkOnly",
     options: {
       cacheName: "backend-api-network-only",
@@ -29,8 +40,6 @@ const withPWA = withPWAInit({
   runtimeCaching,
 });
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
+const nextConfig: NextConfig = {};
 
 export default withPWA(nextConfig);
