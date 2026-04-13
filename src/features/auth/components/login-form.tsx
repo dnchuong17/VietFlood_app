@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { useGlobalAlert } from "@/components/feedback/global-alert-provider";
 import { signIn } from "@/features/auth/api/sign-in";
-import { persistAuthTokens } from "@/features/auth/lib/auth-storage";
+import { persistAuthTokens, getAuthIdentity } from "@/features/auth/lib/auth-storage";
 
 function EyeIcon() {
     return (
@@ -19,26 +19,6 @@ function EyeIcon() {
             <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" strokeWidth="1.7" />
         </svg>
     );
-}
-
-function decodeTokenPayload(token: string): { role?: string } | null {
-    const parts = token.split(".");
-    if (parts.length < 2) {
-        return null;
-    }
-
-    try {
-        const normalizedBase64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
-        const paddedBase64 = normalizedBase64.padEnd(
-            Math.ceil(normalizedBase64.length / 4) * 4,
-            "=",
-        );
-        const decoded = atob(paddedBase64);
-        const payload = JSON.parse(decoded);
-        return payload;
-    } catch {
-        return null;
-    }
 }
 
 function EyeOffIcon() {
@@ -108,9 +88,9 @@ export function LoginForm() {
 
             persistAuthTokens(tokens);
 
-            // Decode token directly to get role (avoid caching issues)
-            const payload = decodeTokenPayload(tokens.accessToken);
-            const userRole = payload?.role?.trim().toLowerCase();
+            // Get user identity to determine redirect path based on role
+            const identity = getAuthIdentity();
+            const userRole = identity?.role?.trim().toLowerCase();
 
             showAlert({
                 title: "Đăng nhập thành công",

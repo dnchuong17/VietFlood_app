@@ -250,7 +250,7 @@ export default function ReliefRouteMap({ report }: { report: ReliefReport | null
         const isOutsideVietnam = hasCoordinates && !isLocationInVietnam(reportLat, reportLng);
 
         return (
-            <div className="grid h-full min-h-[420px] place-items-center rounded-[1.75rem] border border-slate-200 bg-slate-50 px-6 text-center text-slate-600">
+            <div className="grid h-full min-h-105 place-items-center rounded-3xl border border-slate-200 bg-slate-50 px-6 text-center text-slate-600">
                 <div className="max-w-sm">
                     <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-400">OpenStreetMap</p>
                     <p className="mt-3 text-lg font-semibold text-slate-900">
@@ -282,7 +282,7 @@ export default function ReliefRouteMap({ report }: { report: ReliefReport | null
                 ) : null}
             </div>
 
-            <div className="relative h-[440px] overflow-hidden rounded-[1.75rem] border border-slate-200 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
+            <div className="relative h-110 overflow-hidden rounded-3xl border border-slate-200 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
                 <MapContainer center={mapCenter} zoom={13} scrollWheelZoom={false} className="h-full w-full">
                     <TileLayer
                         attribution="&copy; OpenStreetMap contributors"

@@ -61,10 +61,6 @@ export function persistAuthTokens(tokens: SignInResponse): void {
   if (tokens.refresh_token) {
     window.localStorage.setItem(REFRESH_TOKEN_KEY, tokens.refresh_token);
   }
-
-  // Clear identity cache to force re-decode on next getAuthIdentity() call
-  cachedIdentityToken = null;
-  cachedIdentity = null;
 }
 
 export function clearAuthTokens(): void {

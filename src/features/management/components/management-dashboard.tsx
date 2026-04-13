@@ -281,7 +281,7 @@ export function ManagementDashboard() {
             </section>
 
             <section className="grid gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
-                <aside className="rounded-[2rem] border border-white/70 bg-white/95 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.1)]">
+                <aside className="rounded-4xl border border-white/70 bg-white/95 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.1)]">
                     <div className="flex items-start justify-between gap-4">
                         <div>
                             <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Người dùng</p>
@@ -346,7 +346,7 @@ export function ManagementDashboard() {
                 </aside>
 
                 <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_440px]">
-                    <section className="rounded-[2rem] border border-white/70 bg-white/95 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.1)]">
+                    <section className="rounded-4xl border border-white/70 bg-white/95 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.1)]">
                         <div className="flex flex-wrap items-end justify-between gap-3">
                             <div>
                                 <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Báo cáo</p>
@@ -371,25 +371,34 @@ export function ManagementDashboard() {
                                             key={report.id ?? `${report.userId}-${report.createdAt}`}
                                             type="button"
                                             onClick={() => setSelectedReportId(report.id ?? null)}
-                                            className={`w-full rounded-2xl border px-4 py-4 text-left transition ${isActive ? "border-teal-300 bg-teal-50 shadow-[0_10px_24px_rgba(13,148,136,0.12)]" : "border-slate-200 bg-white hover:border-teal-200 hover:bg-teal-50/40"}`}
+                                            className={`w-full rounded-2xl border px-5 py-5 text-left transition ${isActive ? "border-teal-300 bg-teal-50 shadow-[0_10px_24px_rgba(13,148,136,0.12)]" : "border-slate-200 bg-white hover:border-teal-200 hover:bg-teal-50/40"}`}
                                         >
-                                            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                                                <div className="min-w-0 flex-1">
-                                                    <div className="flex flex-wrap items-center gap-2">
-                                                        <span className={`rounded-full border px-2.5 py-1 text-xs font-bold ${statusClass(report.status)}`}>{formatStatus(report.status)}</span>
-                                                        {report.isUrgent ? <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-xs font-bold text-rose-700">Khẩn cấp</span> : null}
-                                                        <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-600">Mức {report.severity ?? 0}</span>
-                                                    </div>
-
-                                                    <p className="mt-3 line-clamp-2 text-base font-bold text-slate-950">
-                                                        {report.description?.trim() || "Báo cáo không có mô tả"}
-                                                    </p>
-                                                    <p className="mt-2 text-sm text-slate-500">{reportLocation(report)}</p>
+                                            <div className="flex flex-col gap-4">
+                                                {/* Status Badges */}
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                    <span className={`rounded-full border px-3 py-1 text-xs font-bold ${statusClass(report.status)}`}>{formatStatus(report.status)}</span>
+                                                    {report.isUrgent ? <span className="rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-bold text-rose-700">Khẩn cấp</span> : null}
+                                                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">Mức {report.severity ?? 0}</span>
                                                 </div>
 
-                                                <div className="rounded-2xl bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600 sm:text-right">
-                                                    <p>{formatDateTime(report.createdAt)}</p>
-                                                    <p className="mt-1">{reportCoordinates(report)}</p>
+                                                {/* Description */}
+                                                <div className="min-w-0">
+                                                    <p className="line-clamp-3 text-sm font-semibold text-slate-950 leading-relaxed">
+                                                        {report.description?.trim() || "Báo cáo không có mô tả"}
+                                                    </p>
+                                                </div>
+
+                                                {/* Location */}
+                                                <div className="flex items-start gap-2">
+                                                    <p className="line-clamp-2 text-xs text-slate-600">{reportLocation(report)}</p>
+                                                </div>
+
+                                                {/* Meta Info */}
+                                                <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-200">
+                                                    <div className="text-xs text-slate-500">
+                                                        <div className="font-semibold text-slate-900">{formatDateTime(report.createdAt)}</div>
+                                                        <div className="mt-1">{reportCoordinates(report)}</div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </button>
@@ -399,7 +408,7 @@ export function ManagementDashboard() {
                         </div>
                     </section>
 
-                    <section className="rounded-[2rem] border border-white/70 bg-white/95 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.1)]">
+                    <section className="rounded-4xl border border-white/70 bg-white/95 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.1)]">
                         <div className="flex flex-col gap-4">
                             <div>
                                 <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Bản đồ</p>
@@ -407,7 +416,7 @@ export function ManagementDashboard() {
                             </div>
 
                             {selectedReport ? (
-                                <div className="rounded-[1.5rem] border border-slate-200 bg-slate-50 px-4 py-4">
+                                <div className="rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4">
                                     <div className="flex flex-wrap items-center gap-2">
                                         <span className={`rounded-full border px-2.5 py-1 text-xs font-bold ${statusClass(selectedReport.status)}`}>{formatStatus(selectedReport.status)}</span>
                                         <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-bold text-slate-600">{selectedReport.isUrgent ? "Ưu tiên cao" : "Theo dõi"}</span>
