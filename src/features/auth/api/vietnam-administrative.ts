@@ -60,12 +60,22 @@ function isRawProvince(value: unknown): value is RawProvince {
   );
 }
 
+function isNumericWard(wardName: string): boolean {
+  // Loại bỏ phường/xã có tên chứa số (ví dụ: "Phường 1", "Phường 2", v.v.)
+  return /\d/.test(wardName);
+}
+
 function toUniqueWards(wards: VnWard[]): VnWard[] {
   const seen = new Set<number>();
   const unique: VnWard[] = [];
 
   for (const ward of wards) {
     if (seen.has(ward.code)) {
+      continue;
+    }
+
+    // Bỏ qua các wards có tên chứa số
+    if (isNumericWard(ward.name)) {
       continue;
     }
 
