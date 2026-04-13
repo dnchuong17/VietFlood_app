@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import { MapContainer, Marker, Polyline, Popup, TileLayer, useMap } from "react-leaflet";
 
 import type { MapPoint, ReliefReport } from "../types";
@@ -67,10 +68,13 @@ function FitBounds({ points }: { points: Array<[number, number]> }) {
     const map = useMap();
 
     useEffect(() => {
-        if (points.length > 0) {
+        if (points.length === 1) {
+            // Single point: set center and zoom instead of fitBounds
+            map.setView(points[0], 14);
+        } else if (points.length > 1) {
             map.fitBounds(points, { padding: [56, 56], maxZoom: 16 });
         }
-    }, [map, points]);
+    }, [points, map]);
 
     return null;
 }
@@ -100,6 +104,7 @@ export default function ReliefRouteMap({ report }: { report: ReliefReport | null
     useEffect(() => {
         setRouteSummary(null);
         setRouteError(null);
+        setIsLoading(false);
 
         if (!destination) {
             setOrigin(null);
@@ -136,6 +141,7 @@ export default function ReliefRouteMap({ report }: { report: ReliefReport | null
 
                 setOrigin({ lat, lng });
                 setMessage("Đã lấy được vị trí hiện tại.");
+                setIsLoading(false);
             },
             () => {
                 if (!isActive) {
@@ -176,11 +182,11 @@ export default function ReliefRouteMap({ report }: { report: ReliefReport | null
                     { cache: "no-store" },
                 );
 
-                const data: OsrmRouteResponse = await response.json().catch(() => ({}));
-
                 if (!response.ok) {
-                    throw new Error("Không thể tải tuyến đường từ OSM.");
+                    throw new Error(`Lỗi từ OSRM API: ${response.status}`);
                 }
+
+                const data: OsrmRouteResponse = await response.json().catch(() => ({}));
 
                 const firstRoute = data.routes?.[0];
                 if (!firstRoute) {

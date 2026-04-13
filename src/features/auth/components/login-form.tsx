@@ -81,10 +81,13 @@ export function LoginForm() {
         try {
             setIsSubmitting(true);
 
-            const tokens = await signIn({
-                username: username.trim(),
-                password,
-            });
+            const tokens = await signIn(
+                {
+                    username: username.trim(),
+                    password,
+                },
+                { allowedRoles: ["citizen", "relief"] }
+            );
 
             persistAuthTokens(tokens);
 
