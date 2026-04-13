@@ -178,49 +178,55 @@ export function ReportCreateForm() {
         );
     }
 
-    function fillCurrentLocation() {
-        if (typeof window === "undefined" || !("geolocation" in navigator)) {
-            setLocationError("Thiết bị không hỗ trợ định vị.");
+    async function geocodeAddress() {
+        const { province, ward, addressLine } = form;
+        const fullAddress = `${addressLine}, ${ward}, ${province}, Việt Nam`;
+
+        if (!addressLine.trim() || !ward.trim() || !province.trim()) {
+            setLocationError("Vui lòng nhập đầy đủ địa chỉ, phường/xã và tỉnh/thành phố.");
             return;
         }
 
         setIsLocating(true);
         setLocationError(null);
 
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const lat = position.coords.latitude.toFixed(6);
-                const lng = position.coords.longitude.toFixed(6);
+        try {
+            const encodedAddress = encodeURIComponent(fullAddress);
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/search?format=json&q=${encodedAddress}&limit=1`
+            );
 
-                setForm((previous) => ({
-                    ...previous,
-                    lat,
-                    lng,
-                }));
-                setIsLocating(false);
-            },
-            (error) => {
-                const message =
-                    error.code === error.PERMISSION_DENIED
-                        ? "Bạn đã từ chối quyền truy cập vị trí."
-                        : error.code === error.TIMEOUT
-                            ? "Hết thời gian lấy vị trí. Vui lòng thử lại."
-                            : "Không thể lấy vị trí hiện tại.";
+            if (!response.ok) {
+                throw new Error("Lỗi khi gọi dịch vụ geocoding");
+            }
 
-                setLocationError(message);
-                setIsLocating(false);
-            },
-            {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 60000,
-            },
-        );
+            const data: Array<{ lat?: string; lon?: string }> = await response.json();
+
+            if (!data || data.length === 0) {
+                setLocationError("Không tìm thấy tọa độ cho địa chỉ này. Vui lòng kiểm tra lại địa chỉ.");
+                return;
+            }
+
+            const result = data[0];
+            const lat = result.lat ? parseFloat(result.lat).toFixed(6) : "";
+            const lng = result.lon ? parseFloat(result.lon).toFixed(6) : "";
+
+            setForm((previous) => ({
+                ...previous,
+                lat,
+                lng,
+            }));
+        } catch (error) {
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : "Không thể lấy tọa độ từ địa chỉ.";
+
+            setLocationError(message);
+        } finally {
+            setIsLocating(false);
+        }
     }
-
-    useEffect(() => {
-        fillCurrentLocation();
-    }, []);
 
     useEffect(() => {
         let isMounted = true;
@@ -630,6 +636,28 @@ export function ReportCreateForm() {
                             />
                         </label>
 
+                        <div className="rounded-xl border border-blue-200 bg-blue-50 px-3 py-2.5">
+                            <div className="flex items-center justify-between gap-3">
+                                <p className="text-xs text-blue-600">
+                                    Tọa độ sẽ được tạo tự động từ địa chỉ bạn nhập.
+                                </p>
+                                <button
+                                    type="button"
+                                    className="rounded-lg border border-blue-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-blue-700 transition hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        void geocodeAddress();
+                                    }}
+                                    disabled={isSubmitting || isLocating}
+                                >
+                                    {isLocating ? "Đang lấy tọa độ..." : "Lấy tọa độ từ địa chỉ"}
+                                </button>
+                            </div>
+                            {locationError ? (
+                                <p className="mt-1 text-xs text-red-700">{locationError}</p>
+                            ) : null}
+                        </div>
+
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                             <label className="block space-y-1">
                                 <span className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
@@ -638,9 +666,10 @@ export function ReportCreateForm() {
                                 <input
                                     type="text"
                                     value={form.lat}
-                                    readOnly
-                                    className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-900"
-                                    placeholder={isLocating ? "Đang lấy vị trí..." : "Chưa có vị trí"}
+                                    onChange={(event) => handleChange("lat", event.target.value)}
+                                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-transparent focus:ring-2 focus:ring-sky-500/40"
+                                    placeholder="Tọa độ sẽ hiển thị ở đây"
+                                    disabled={isSubmitting}
                                 />
                             </label>
 
@@ -651,30 +680,12 @@ export function ReportCreateForm() {
                                 <input
                                     type="text"
                                     value={form.lng}
-                                    readOnly
-                                    className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-900"
-                                    placeholder={isLocating ? "Đang lấy vị trí..." : "Chưa có vị trí"}
+                                    onChange={(event) => handleChange("lng", event.target.value)}
+                                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-transparent focus:ring-2 focus:ring-sky-500/40"
+                                    placeholder="Tọa độ sẽ hiển thị ở đây"
+                                    disabled={isSubmitting}
                                 />
                             </label>
-                        </div>
-
-                        <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
-                            <div className="flex items-center justify-between gap-3">
-                                <p className="text-xs text-slate-600">
-                                    Tọa độ được lấy tự động từ vị trí hiện tại của thiết bị.
-                                </p>
-                                <button
-                                    type="button"
-                                    className="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
-                                    onClick={fillCurrentLocation}
-                                    disabled={isSubmitting || isLocating}
-                                >
-                                    {isLocating ? "Đang lấy..." : "Lấy lại vị trí"}
-                                </button>
-                            </div>
-                            {locationError ? (
-                                <p className="mt-1 text-xs text-red-700">{locationError}</p>
-                            ) : null}
                         </div>
 
                         <label className="block space-y-1">
