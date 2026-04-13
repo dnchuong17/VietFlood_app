@@ -6,10 +6,7 @@ import type {
   UpdateProfilePayload,
 } from "@/features/auth/types/auth";
 
-const runtimeHost =
-  typeof window !== "undefined" ? window.location.hostname : "localhost";
-
-const DEFAULT_AUTH_API_BASE_URL = `http://${runtimeHost}:8081`;
+const DEFAULT_AUTH_API_BASE_URL = "https://vietflood-app.azurewebsites.net";
 
 const AUTH_API_BASE_URL =
   process.env.NEXT_PUBLIC_AUTH_API_BASE_URL ?? DEFAULT_AUTH_API_BASE_URL;
@@ -99,6 +96,10 @@ function extractRole(profile: AuthProfile | null): string | null {
   return profile.role.trim().toLowerCase();
 }
 
+type SignInOptions = {
+  allowedRoles?: string[];
+};
+
 export async function getProfile(
   accessToken: string,
 ): Promise<AuthProfile | null> {
@@ -151,7 +152,10 @@ export async function updateProfile(
   }
 }
 
-export async function signIn(payload: SignInPayload): Promise<SignInResponse> {
+export async function signIn(
+  payload: SignInPayload,
+  options: SignInOptions = {},
+): Promise<SignInResponse> {
   const response = await fetch(`${AUTH_API_BASE_URL}/auth/sign_in`, {
     method: "POST",
     credentials: "include",
@@ -175,11 +179,12 @@ export async function signIn(payload: SignInPayload): Promise<SignInResponse> {
 
   const profile = await getProfile(tokens.accessToken);
   const role = extractRole(profile);
+  const allowedRoles = (options.allowedRoles ?? ["citizen"]).map((item) =>
+    item.trim().toLowerCase(),
+  );
 
-  if (role !== "citizen") {
-    throw new Error(
-      "Tài khoản người dùng không hợp lệ để đăng nhập mobile app.",
-    );
+  if (!role || !allowedRoles.includes(role)) {
+    throw new Error("Tài khoản này không có quyền truy cập vào ứng dụng.");
   }
 
   return tokens;

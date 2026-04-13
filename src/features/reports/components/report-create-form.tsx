@@ -10,7 +10,7 @@ import {
 } from "@/features/auth/api/vietnam-administrative";
 import { apiRequest } from "@/features/auth/lib/api-client";
 
-const DEFAULT_API_BASE_URL = "http://localhost:8081";
+const DEFAULT_API_BASE_URL = "https://vietflood-app.azurewebsites.net";
 const API_BASE_URL =
     process.env.NEXT_PUBLIC_AUTH_API_BASE_URL ?? DEFAULT_API_BASE_URL;
 

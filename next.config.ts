@@ -4,10 +4,10 @@ import withPWAInit from "next-pwa";
 type RuntimeCachingRule = {
   urlPattern: RegExp;
   handler:
-      | "NetworkOnly"
-      | "CacheFirst"
-      | "NetworkFirst"
-      | "StaleWhileRevalidate";
+    | "NetworkOnly"
+    | "CacheFirst"
+    | "NetworkFirst"
+    | "StaleWhileRevalidate";
   options?: {
     cacheName?: string;
   };
@@ -15,16 +15,14 @@ type RuntimeCachingRule = {
 
 const runtimeCaching: RuntimeCachingRule[] = [
   {
-    urlPattern:
-        /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+):8081\/auth\/.*$/,
+    urlPattern: /^https?:\/\/vietflood-app\.azurewebsites\.net\/auth\/.*$/,
     handler: "NetworkOnly",
     options: {
       cacheName: "auth-api-network-only",
     },
   },
   {
-    urlPattern:
-        /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+):8081\/.*$/,
+    urlPattern: /^https?:\/\/vietflood-app\.azurewebsites\.net\/.*$/,
     handler: "NetworkOnly",
     options: {
       cacheName: "backend-api-network-only",

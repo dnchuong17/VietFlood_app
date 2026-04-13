@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { useGlobalAlert } from "@/components/feedback/global-alert-provider";
@@ -162,9 +161,9 @@ export function LoginForm() {
 
             <p className="mt-1 text-center text-sm text-slate-600">
                 Chưa có tài khoản?{" "}
-                <Link href="/dang-ky" className="font-semibold text-sky-700 underline-offset-2 hover:underline">
+                <a href="/dang-ky" className="font-semibold text-sky-700 underline-offset-2 hover:underline">
                     Đăng ký ngay
-                </Link>
+                </a>
             </p>
         </form>
     );

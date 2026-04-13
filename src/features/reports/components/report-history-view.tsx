@@ -6,7 +6,7 @@ import { apiRequest } from "@/features/auth/lib/api-client";
 import { getAccessToken } from "@/features/auth/lib/auth-storage";
 import { useGlobalAlert } from "@/components/feedback/global-alert-provider";
 
-const DEFAULT_API_BASE_URL = "http://localhost:8081";
+const DEFAULT_API_BASE_URL = "https://vietflood-app.azurewebsites.net";
 const API_BASE_URL =
     process.env.NEXT_PUBLIC_AUTH_API_BASE_URL ?? DEFAULT_API_BASE_URL;
 

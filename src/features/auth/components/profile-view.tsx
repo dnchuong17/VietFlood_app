@@ -29,7 +29,7 @@ type EditableProfileForm = {
     address_line: string;
 };
 
-const DEFAULT_AUTH_API_BASE_URL = "http://localhost:8081";
+const DEFAULT_AUTH_API_BASE_URL = "https://vietflood-app.azurewebsites.net";
 const AUTH_API_BASE_URL =
     process.env.NEXT_PUBLIC_AUTH_API_BASE_URL ?? DEFAULT_AUTH_API_BASE_URL;
 
