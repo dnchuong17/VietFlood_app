@@ -431,7 +431,6 @@ export function ReportCreateForm() {
             setSelectedProvinceCode("");
             setSelectedWardCode("");
             setReportItems([DEFAULT_REPORT_ITEM]);
-            fillCurrentLocation();
         } catch (error) {
             showAlert({
                 title: "Không thể gửi báo cáo",
