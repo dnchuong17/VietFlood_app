@@ -40,7 +40,7 @@ export function SiteHeader() {
     function handleAuthAction() {
         if (identity) {
             clearAuthTokens();
-            router.push("/trang-chu");
+            router.push("/dang-nhap");
             router.refresh();
             return;
         }

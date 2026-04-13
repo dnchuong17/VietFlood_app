@@ -21,6 +21,26 @@ function EyeIcon() {
     );
 }
 
+function decodeTokenPayload(token: string): { role?: string } | null {
+    const parts = token.split(".");
+    if (parts.length < 2) {
+        return null;
+    }
+
+    try {
+        const normalizedBase64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+        const paddedBase64 = normalizedBase64.padEnd(
+            Math.ceil(normalizedBase64.length / 4) * 4,
+            "=",
+        );
+        const decoded = atob(paddedBase64);
+        const payload = JSON.parse(decoded);
+        return payload;
+    } catch {
+        return null;
+    }
+}
+
 function EyeOffIcon() {
     return (
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" className="h-[1.15rem] w-[1.15rem]">
@@ -87,12 +107,23 @@ export function LoginForm() {
             });
 
             persistAuthTokens(tokens);
+
+            // Decode token directly to get role (avoid caching issues)
+            const payload = decodeTokenPayload(tokens.accessToken);
+            const userRole = payload?.role?.trim().toLowerCase();
+
             showAlert({
                 title: "Đăng nhập thành công",
                 description: "Chào mừng bạn quay lại hệ thống.",
                 variant: "success",
             });
-            router.replace("/trang-chu");
+
+            // Redirect based on user role
+            if (userRole === "relief") {
+                router.replace("/quan-ly");
+            } else {
+                router.replace("/trang-chu");
+            }
             router.refresh();
         } catch (error) {
             const message = toDisplayErrorMessage(error);

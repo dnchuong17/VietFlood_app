@@ -177,14 +177,17 @@ export async function signIn(
 
   const tokens = normalizeTokens(data);
 
-  const profile = await getProfile(tokens.accessToken);
-  const role = extractRole(profile);
-  const allowedRoles = (options.allowedRoles ?? ["citizen"]).map((item) =>
-    item.trim().toLowerCase(),
-  );
+  // Optional: validate role if allowedRoles is explicitly provided
+  if (options.allowedRoles && options.allowedRoles.length > 0) {
+    const profile = await getProfile(tokens.accessToken);
+    const role = extractRole(profile);
+    const allowedRoles = options.allowedRoles.map((item) =>
+      item.trim().toLowerCase(),
+    );
 
-  if (!role || !allowedRoles.includes(role)) {
-    throw new Error("Tài khoản này không có quyền truy cập vào ứng dụng.");
+    if (!role || !allowedRoles.includes(role)) {
+      throw new Error("Tài khoản này không có quyền truy cập vào ứng dụng.");
+    }
   }
 
   return tokens;
