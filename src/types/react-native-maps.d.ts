@@ -30,6 +30,7 @@ declare module 'react-native-maps' {
     rotateEnabled?: boolean;
     toolbarEnabled?: boolean;
     showsUserLocation?: boolean;
+    showsMyLocationButton?: boolean;
     followsUserLocation?: boolean;
     initialRegion?: Region;
     camera?: any;

@@ -126,7 +126,7 @@ export function HomeScreen() {
       {/* Users Overview Statistics */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Tổng Quan Người Dùng</Text>
-        <Card style={[styles.usersCard, isTablet && styles.usersCardTablet]}>
+        <Card style={isTablet ? { ...styles.usersCard, ...styles.usersCardTablet } : styles.usersCard}>
           <View style={isTablet ? layouts.rowBetween : {}}>
             <View style={[styles.usersStatItem, !isTablet && styles.usersStatItemStacked]}>
               <Text style={styles.usersStatValue}>{usersStats.totalUsers}</Text>

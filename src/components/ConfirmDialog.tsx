@@ -18,6 +18,7 @@ interface ConfirmDialogProps {
   confirmText?: string;
   cancelText?: string;
   isDangerous?: boolean;
+  isDestructive?: boolean;
 }
 
 export function ConfirmDialog({
@@ -29,7 +30,9 @@ export function ConfirmDialog({
   confirmText = 'Xác Nhận',
   cancelText = 'Hủy',
   isDangerous = false,
+  isDestructive = false,
 }: ConfirmDialogProps) {
+  const isConfirmDestructive = isDangerous || isDestructive;
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.overlay}>
@@ -46,10 +49,7 @@ export function ConfirmDialog({
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[
-                styles.confirmButton,
-                isDangerous ? styles.confirmButtonDanger : {},
-              ]}
+              style={isConfirmDestructive ? { ...styles.confirmButton, ...styles.confirmButtonDanger } : styles.confirmButton}
               onPress={onConfirm}
             >
               <Text style={styles.confirmButtonText}>{confirmText}</Text>
