@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { colors, spacing, fonts, shadows, layouts } from '../../lib/styling';
 import { useResponsiveLayout } from '../../lib/useResponsiveLayout';
+import { OfflineIndicator } from '../../lib/offline';
 import { Card, Loading } from '../../components';
 
 export function HomeScreen() {
@@ -54,7 +55,9 @@ export function HomeScreen() {
   if (loading) return <Loading />;
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <>
+      <OfflineIndicator position="top" showOnline={false} />
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Trang Chủ</Text>
@@ -157,6 +160,7 @@ export function HomeScreen() {
         </Card>
       </View>
     </ScrollView>
+    </>
   );
 }
 

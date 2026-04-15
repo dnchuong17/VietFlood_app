@@ -1,10 +1,12 @@
 import React from 'react';
+import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text } from 'react-native';
 import { useAuth } from '../../features/auth';
 import { useRoleBasedAccess } from '../rbac';
+import { OfflineIndicator } from '../offline';
 
 // Import all screens
 import { LoginScreen, RegisterScreen } from '../../features/auth';
@@ -168,8 +170,11 @@ export function RootNavigator() {
   }
 
   return (
-    <NavigationContainer>
-      {isAuthenticated && accessToken ? <ProtectedStack /> : <PublicStack />}
-    </NavigationContainer>
+    <View style={{ flex: 1 }}>
+      <OfflineIndicator position="top" showOnline={false} />
+      <NavigationContainer>
+        {isAuthenticated && accessToken ? <ProtectedStack /> : <PublicStack />}
+      </NavigationContainer>
+    </View>
   );
 }

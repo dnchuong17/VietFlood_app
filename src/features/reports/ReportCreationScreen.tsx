@@ -11,9 +11,10 @@ import {
 } from 'react-native';
 import * as Location from 'expo-location';
 import { colors, spacing, shadows } from '../../lib/styling';
+import { OfflineIndicator } from '../../lib/offline';
 import { Card, Button, TextInput } from '../../components';
 import { PhotoPicker, PhotoGallery, PickedImage } from '../../components/PhotoPicker';
-import { reportService } from '../../lib/services';
+import { offlineReportService } from '../../lib/offline-services';
 import { CreateReportRequest } from '../../types/reports';
 
 export function ReportCreationScreen({ navigation }: any) {
@@ -96,8 +97,8 @@ export function ReportCreationScreen({ navigation }: any) {
         })),
       };
 
-      await reportService.createReport(reportData);
-      Alert.alert('Success', 'Report created successfully');
+      await offlineReportService.createReport(reportData);
+      Alert.alert('Success', 'Report created successfully. It will sync when online.');
       navigation?.goBack();
     } catch (error: any) {
       Alert.alert('Error', error.message || 'Failed to create report');
