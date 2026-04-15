@@ -127,7 +127,7 @@ export function NotificationsScreen({ navigation }: any) {
             <Text style={styles.icon}>{getTypeIcon(item.type)}</Text>
           </View>
           <View style={styles.textContainer}>
-            <Text style={[styles.title, !item.read && styles.unreadTitle]}>
+            <Text style={[styles.notificationTitle, !item.read && styles.unreadTitle]}>
               {item.title}
             </Text>
             <Text style={styles.message} numberOfLines={2}>
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 1,
   },
-  title: {
+  notificationTitle: {
     fontSize: 14,
     fontWeight: '600',
     color: colors.gray900,

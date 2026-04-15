@@ -74,7 +74,7 @@ export function PhotoPicker({
         const asset = result.assets[0];
         const photo: PickedImage = {
           uri: asset.uri,
-          name: asset.filename || `photo_${Date.now()}.jpg`,
+          name: asset.fileName || `photo_${Date.now()}.jpg`,
           type: 'image/jpeg',
           size: asset.width * asset.height,
         };
@@ -95,7 +95,6 @@ export function PhotoPicker({
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsMultiple: maxPhotos > 1,
         selectionLimit: maxPhotos,
         aspect: [4, 3],
         quality: 0.8,
@@ -104,7 +103,7 @@ export function PhotoPicker({
       if (!result.canceled && result.assets.length > 0) {
         const photos: PickedImage[] = result.assets.map((asset, index) => ({
           uri: asset.uri,
-          name: asset.filename || `photo_${Date.now()}_${index}.jpg`,
+          name: asset.fileName || `photo_${Date.now()}_${index}.jpg`,
           type: 'image/jpeg',
           size: asset.width * asset.height,
         }));

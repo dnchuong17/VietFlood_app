@@ -1,6 +1,6 @@
 import { Polyline } from 'react-native-maps';
 import { Location } from '../../types/reports';
-import { colors } from '../styling';
+import { colors } from '../../lib/styling';
 
 /**
  * Route interface for visualization

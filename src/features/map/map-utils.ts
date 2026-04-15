@@ -9,7 +9,7 @@ interface ClusteringOptions {
   minClusterSize?: number; // Minimum markers to form a cluster
 }
 
-interface MapBounds {
+export interface MapBounds {
   minLat: number;
   maxLat: number;
   minLon: number;
