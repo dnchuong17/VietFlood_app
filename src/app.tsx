@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 import { LogBox } from 'react-native';
-import { AuthProvider } from './features/auth/hooks/useAuth';
+import { AuthProvider } from './lib/hooks/useAuth';
+import { ReliefProvider } from './lib/hooks/useOperations';
 import { ThemeProvider } from './lib/theme/ThemeContext';
 import { RootNavigator } from './lib/navigation/RootNavigator';
 import { OfflineProvider } from './lib/offline';
@@ -45,7 +46,9 @@ export default function App() {
       <ThemeProvider>
         <OfflineProvider>
           <AuthProvider>
-            <RootNavigator />
+            <ReliefProvider>
+              <RootNavigator />
+            </ReliefProvider>
           </AuthProvider>
         </OfflineProvider>
       </ThemeProvider>

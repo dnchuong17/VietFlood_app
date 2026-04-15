@@ -1,0 +1,132 @@
+{
+  "common": {
+    "appName": "VietFlood",
+    "button": {
+      "submit": "Gửi",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "delete": "Xóa",
+      "edit": "Chỉnh sửa",
+      "back": "Quay lại",
+      "next": "Tiếp theo",
+      "skip": "Bỏ qua",
+      "done": "Hoàn tất",
+      "close": "Đóng",
+      "confirm": "Xác nhận",
+      "loading": "Đang tải..."
+    },
+    "status": {
+      "loading": "Đang tải",
+      "success": "Thành công",
+      "error": "Lỗi",
+      "warning": "Cảnh báo",
+      "info": "Thông tin"
+    },
+    "errors": {
+      "fieldRequired": "Trường này là bắt buộc",
+      "invalidEmail": "Vui lòng nhập email hợp lệ",
+      "invalidPhone": "Vui lòng nhập số điện thoại hợp lệ",
+      "passwordTooShort": "Mật khẩu phải dài ít nhất 8 ký tự",
+      "passwordMismatch": "Mật khẩu không khớp",
+      "networkError": "Lỗi kết nối mạng",
+      "serverError": "Lỗi máy chủ, vui lòng thử lại sau"
+    }
+  },
+  "auth": {
+    "screen": {
+      "login": {
+        "title": "Đăng nhập",
+        "subtitle": "Chào mừng quay lại VietFlood",
+        "emailLabel": "Email",
+        "passwordLabel": "Mật khẩu",
+        "rememberMe": "Ghi nhớ tôi",
+        "forgotPassword": "Quên mật khẩu?",
+        "loginButton": "Đăng nhập",
+        "noAccount": "Chưa có tài khoản?",
+        "signup": "Đăng ký"
+      },
+      "register": {
+        "title": "Tạo tài khoản",
+        "subtitle": "Tham gia VietFlood để giúp đỡ trong các tình huống khẩn cấp",
+        "nameLabel": "Họ và tên",
+        "emailLabel": "Email",
+        "phoneLabel": "Số điện thoại",
+        "passwordLabel": "Mật khẩu",
+        "confirmPasswordLabel": "Xác nhận mật khẩu",
+        "registerButton": "Tạo tài khoản",
+        "haveAccount": "Đã có tài khoản?",
+        "login": "Đăng nhập",
+        "termsAcceptance": "Tôi đồng ý với Điều khoản dịch vụ và Chính sách bảo mật"
+      }
+    }
+  },
+  "relief": {
+    "screen": {
+      "dashboard": {
+        "title": "Các hoạt động cứu trợ",
+        "activeOperations": "Hoạt động đang diễn ra",
+        "joinOperation": "Tham gia hoạt động",
+        "createOperation": "Tạo hoạt động",
+        "noOperations": "Không có hoạt động nào",
+        "viewDetails": "Xem chi tiết"
+      },
+      "operation": {
+        "title": "Chi tiết hoạt động",
+        "status": "Trạng thái",
+        "priority": "Ưu tiên",
+        "location": "Vị trí",
+        "team": "Đội",
+        "resources": "Tài nguyên",
+        "updates": "Cập nhật",
+        "join": "Tham gia hoạt động",
+        "leave": "Rời hoạt động",
+        "teamMembers": "Thành viên đội",
+        "coordinator": "Điều phối viên"
+      }
+    }
+  },
+  "home": {
+    "screen": {
+      "title": "Trang chủ",
+      "emergencyAlert": "Cảnh báo khẩn cấp",
+      "reliefOperations": "Các hoạt động cứu trợ",
+      "nearbyOperations": "Hoạt động gần đây",
+      "reportIncident": "Báo cáo sự cố",
+      "volunteerProfile": "Hồ sơ của bạn"
+    }
+  },
+  "profile": {
+    "screen": {
+      "title": "Hồ sơ",
+      "settings": "Cài đặt",
+      "notifications": "Thông báo",
+      "help": "Trợ giúp & Hỗ trợ",
+      "about": "Về VietFlood",
+      "logout": "Đăng xuất",
+      "personalInfo": "Thông tin cá nhân",
+      "changePassword": "Đổi mật khẩu",
+      "privacy": "Cài đặt bảo mật"
+    }
+  },
+  "months": {
+    "january": "Tháng 1",
+    "february": "Tháng 2",
+    "march": "Tháng 3",
+    "april": "Tháng 4",
+    "may": "Tháng 5",
+    "june": "Tháng 6",
+    "july": "Tháng 7",
+    "august": "Tháng 8",
+    "september": "Tháng 9",
+    "october": "Tháng 10",
+    "november": "Tháng 11",
+    "december": "Tháng 12"
+  },
+  "validation": {
+    "required": "Trường này là bắt buộc",
+    "email": "Vui lòng nhập địa chỉ email hợp lệ",
+    "phone": "Vui lòng nhập số điện thoại hợp lệ",
+    "minLength": "Phải dài ít nhất %{count} ký tự",
+    "maxLength": "Không được dài quá %{count} ký tự"
+  }
+}

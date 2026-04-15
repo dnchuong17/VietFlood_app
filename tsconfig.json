@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "lib": ["es2020", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
@@ -14,7 +17,39 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@services": [
+        "./src/services"
+      ],
+      "@services/*": [
+        "./src/services/*"
+      ],
+      "@models": [
+        "./src/models"
+      ],
+      "@models/*": [
+        "./src/models/*"
+      ],
+      "@features": [
+        "./src/features"
+      ],
+      "@features/*": [
+        "./src/features/*"
+      ],
+      "@components": [
+        "./src/components"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@lib": [
+        "./src/lib"
+      ],
+      "@lib/*": [
+        "./src/lib/*"
+      ]
     }
   },
   "include": [
@@ -23,5 +58,11 @@
     "src/**/*.tsx",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "src-rn-backup", "src-nextjs", ".next"]
+  "exclude": [
+    "node_modules",
+    "src-rn-backup",
+    "src-nextjs",
+    ".next"
+  ],
+  "extends": "expo/tsconfig.base"
 }

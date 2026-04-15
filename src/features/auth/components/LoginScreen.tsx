@@ -1,28 +1,32 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView, SafeAreaView } from 'react-native';
-import { useAuth } from '../hooks/useAuth';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import { useAuth } from '../../../lib/hooks/useAuth';
+import { SafeAreaWrapper } from '../../../components/design-system/SafeAreaWrapper';
+import { Button } from '../../../components/design-system/Button';
+import { Input } from '../../../components/design-system/Input';
 
 export function LoginScreen({ navigation }: any) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { login, isLoading, error } = useAuth();
+  const auth = useAuth();
+  const { isLoading, error } = auth;
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
       return;
     }
     try {
-      await login(email, password);
-    } catch (error) {
-      console.error('Login failed:', error);
+      await auth.login(email, password);
+    } catch (err) {
+      console.error('Login failed:', err);
     }
   };
 
   const isFormValid = email.trim() !== '' && password.trim() !== '';
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaWrapper style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <Text style={styles.title}>VietFlood</Text>
@@ -87,7 +91,7 @@ export function LoginScreen({ navigation }: any) {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </SafeAreaWrapper>
   );
 }
 
