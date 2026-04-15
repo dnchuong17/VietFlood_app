@@ -25,10 +25,9 @@ function PublicStack() {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        animationEnabled: true,
       }}
     >
-      <Stack.Screen name="Login" component={LoginScreen} options={{ animationEnabled: false }} />
+      <Stack.Screen name="Login" component={LoginScreen} options={{}} />
       <Stack.Screen name="Register" component={RegisterScreen} />
     </Stack.Navigator>
   );

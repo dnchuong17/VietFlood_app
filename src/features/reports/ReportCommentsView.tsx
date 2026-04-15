@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { usePolling } from '../../lib/hooks/usePolling';
 
-interface ReportComment {
+export interface ReportComment {
   id: string;
   author: string;
   authorRole?: string;

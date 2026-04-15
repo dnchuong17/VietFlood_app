@@ -37,13 +37,13 @@ export { ThemeProvider, useTheme } from './theme/ThemeContext';
 
 // API & Services
 export { apiClient } from './api-client';
-export { reportService, reliefService, userService, authService } from './services';
+export { reportService, operationService } from './services';
 
 // RBAC
 export { useRoleBasedAccess } from './rbac';
 
 // Navigation
-export { navigationRef, RootNavigator } from './navigation';
+export { RootNavigator } from './navigation/RootNavigator';
 
 // Weather
 export { weatherService } from './weather-service';

@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { colors, spacing } from '../../lib/styling';
 import { Card, Loading, Button } from '../../components';
-import { useAuth } from '../../features/auth/useAuth';
+import { useAuth } from '../auth';
 
 interface VolunteerShift {
   id: string;

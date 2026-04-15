@@ -9,7 +9,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { colors, spacing, fonts, shadows } from '../../lib/styling';
-import { Card } from './Card';
+import { Card } from '../../components';
 
 export interface TeamMember {
   id: string;

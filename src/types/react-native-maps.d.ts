@@ -33,6 +33,7 @@ declare module 'react-native-maps' {
     initialRegion?: Region;
     camera?: any;
     onMapReady?: () => void;
+    customMapStyle?: any[];
   }
 
   export interface MarkerProps {
@@ -42,6 +43,7 @@ declare module 'react-native-maps' {
     image?: any;
     onPress?: () => void;
     children?: ReactNode;
+    pinColor?: string;
   }
 
   export interface CircleProps {
@@ -68,6 +70,7 @@ declare module 'react-native-maps' {
     strokeWidth?: number;
     tappable?: boolean;
     onPress?: () => void;
+    geodesic?: boolean;
   }
 
   export default class MapView extends React.Component<MapViewProps> {
