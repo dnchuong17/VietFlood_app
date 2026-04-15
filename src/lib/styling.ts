@@ -69,6 +69,14 @@ export const fonts = {
   h4: { fontSize: 20, fontWeight: '600' as const },
   h5: { fontSize: 16, fontWeight: '600' as const },
   h6: { fontSize: 14, fontWeight: '600' as const },
+  sizes: {
+    body: 14,
+    caption: 12,
+    small: 12,
+    md: 16,
+    lg: 20,
+    xl: 24,
+  },
 };
 
 // Responsive utilities
@@ -330,7 +338,8 @@ export function getThemeColor(
 // Comprehensive theme object for components
 export const theme = {
   ...colors,
-  sizes: fonts,
+  sizes: fonts.sizes,
+  fonts,
   border: borderRadius,
   radius: borderRadius,
 };
