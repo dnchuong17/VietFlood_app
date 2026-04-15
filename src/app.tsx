@@ -5,6 +5,7 @@ import { LogBox } from 'react-native';
 import { AuthProvider } from './features/auth/hooks/useAuth';
 import { ThemeProvider } from './lib/theme/ThemeContext';
 import { RootNavigator } from './lib/navigation/RootNavigator';
+import { OfflineProvider } from './lib/offline';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Keep splash screen visible while loading resources
@@ -42,9 +43,11 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider>
-        <AuthProvider>
-          <RootNavigator />
-        </AuthProvider>
+        <OfflineProvider>
+          <AuthProvider>
+            <RootNavigator />
+          </AuthProvider>
+        </OfflineProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
   );
