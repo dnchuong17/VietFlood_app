@@ -8,7 +8,7 @@ import {
   FlatList,
   SafeAreaView,
 } from 'react-native';
-import { colors, spacing, shadows } from '../../lib/styling';
+import { colors, spacing, shadows } from '../lib/styling';
 
 interface StatusOption {
   label: string;

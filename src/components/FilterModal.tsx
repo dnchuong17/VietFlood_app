@@ -8,7 +8,7 @@ import {
   ScrollView,
   SafeAreaView,
 } from 'react-native';
-import { colors, spacing, shadows } from '../../lib/styling';
+import { colors, spacing, shadows } from '../lib/styling';
 import { Button } from './Button';
 
 interface FilterOptions {

@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { colors, spacing } from '../../lib/styling';
+import { colors, spacing } from '../lib/styling';
 
 export interface PickedImage {
   uri: string;

@@ -7,7 +7,7 @@ import {
   StyleSheet,
   SafeAreaView,
 } from 'react-native';
-import { colors, spacing, shadows } from '../../lib/styling';
+import { colors, spacing, shadows } from '../lib/styling';
 
 interface ConfirmDialogProps {
   visible: boolean;
