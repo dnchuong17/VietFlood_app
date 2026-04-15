@@ -1,16 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { ReliefOperation } from '../../types/reports';
 import { operationService } from '../../lib/services';
 import { colors, spacing, fonts, shadows } from '../../lib/styling';
 import { Card, Button } from '../../components';
 import { useRoleBasedAccess } from '../../lib/rbac';
+import { useOperations } from '../../lib/hooks/useOperations';
+import { useAuth } from '../../lib/hooks/useAuth';
 
 export function ReliefDashboardScreen({ navigation }: any) {
-  const [operations, setOperations] = useState<ReliefOperation[]>([]);
-  const [loading, setLoading] = useState(true);
   const { canAccess } = useRoleBasedAccess();
-
+  const reliefStore = useOperations();
+  const auth = useAuth();
+  
+  // Load operations on mount
   useEffect(() => {
     if (canAccess(['relief_worker', 'admin'])) {
       loadOperations();
@@ -18,18 +21,22 @@ export function ReliefDashboardScreen({ navigation }: any) {
   }, []);
 
   const loadOperations = async () => {
-    setLoading(true);
+    reliefStore.setLoading(true)
+    reliefStore.setError(null)
     try {
       const data = await operationService.getOperations();
-      setOperations(data);
+      // Convert API data to store format
+      reliefStore.syncOperations(data as any)
     } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to load operations'
+      reliefStore.setError(message)
       console.error('Failed to load operations:', error);
     } finally {
-      setLoading(false);
+      reliefStore.setLoading(false)
     }
   };
 
-  const renderOperationCard = ({ item }: { item: ReliefOperation }) => (
+  const renderOperationCard = ({ item }: { item: any }) => (
     <TouchableOpacity
       style={styles.operationCard}
       onPress={() => navigation?.navigate('OperationDetail', { operationId: item.id })}
@@ -44,19 +51,22 @@ export function ReliefDashboardScreen({ navigation }: any) {
         {item.description}
       </Text>
       <View style={styles.operationFooter}>
-        <Text style={styles.footerText}>👥 {item.volunteers.length} tình nguyện viên</Text>
-        <Text style={styles.footerText}>📦 {item.resources.length} tài nguyên</Text>
+        <Text style={styles.footerText}>👥 {item.teamMembers?.length || 0} tình nguyện viên</Text>
+        <Text style={styles.footerText}>📦 {item.resources?.length || 0} tài nguyên</Text>
       </View>
     </TouchableOpacity>
   );
 
-  if (loading) {
+  if (reliefStore.isLoading) {
     return (
       <View style={styles.centerContainer}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
+
+  const activeOperations = reliefStore.activeOperations;
+  const totalTeamMembers = reliefStore.operations.reduce((sum, o) => sum + (o.teamMembers?.length || 0), 0);
 
   return (
     <View style={styles.container}>
@@ -73,25 +83,31 @@ export function ReliefDashboardScreen({ navigation }: any) {
         )}
       </View>
 
+      {/* Error Message */}
+      {reliefStore.error && (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{reliefStore.error}</Text>
+          <TouchableOpacity onPress={loadOperations} style={styles.retryButton}>
+            <Text style={styles.retryButtonText}>Thử lại</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
       {/* Stats */}
       <View style={styles.statsContainer}>
         <Card style={styles.statCard}>
           <Text style={styles.statLabel}>Hoạt Động Đang Diễn Ra</Text>
-          <Text style={styles.statValue}>
-            {operations.filter(o => o.status === 'active').length}
-          </Text>
+          <Text style={styles.statValue}>{activeOperations.length}</Text>
         </Card>
         <Card style={styles.statCard}>
           <Text style={styles.statLabel}>Tổng Tình Nguyện Viên</Text>
-          <Text style={styles.statValue}>
-            {operations.reduce((sum, o) => sum + o.volunteers.length, 0)}
-          </Text>
+          <Text style={styles.statValue}>{totalTeamMembers}</Text>
         </Card>
       </View>
 
       {/* Operations List */}
       <FlatList
-        data={operations}
+        data={reliefStore.operations}
         renderItem={renderOperationCard}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
@@ -178,6 +194,38 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '700',
     color: colors.primary,
+  },
+  errorContainer: {
+    backgroundColor: '#fee2e2',
+    borderLeftWidth: 4,
+    borderLeftColor: colors.danger,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    marginHorizontal: spacing.md,
+    marginTop: spacing.sm,
+    marginBottom: spacing.md,
+    borderRadius: 4,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  errorText: {
+    flex: 1,
+    color: colors.danger,
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  retryButton: {
+    backgroundColor: colors.danger,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 4,
+    borderRadius: 4,
+    marginLeft: spacing.sm,
+  },
+  retryButtonText: {
+    color: colors.white,
+    fontSize: 12,
+    fontWeight: '600',
   },
   listContent: {
     paddingHorizontal: spacing.md,

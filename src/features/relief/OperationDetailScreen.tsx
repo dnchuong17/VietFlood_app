@@ -17,28 +17,40 @@ import { Card, Button, ConfirmDialog } from '../../components';
 import { TeamMemberList, TeamMember } from './TeamMemberList';
 import { ResourceTrackingView } from './ResourceTrackingView';
 import { useRoleBasedAccess } from '../../lib/rbac';
+import { useOperations } from '../../lib/hooks/useOperations';
 
 export function OperationDetailScreen({ route, navigation }: any) {
   const { operationId } = route.params;
-  const [operation, setOperation] = useState<ReliefOperation | null>(null);
-  const [loading, setLoading] = useState(true);
+  const reliefStore = useOperations();
   const [updating, setUpdating] = useState(false);
   const [showStatusDialog, setShowStatusDialog] = useState(false);
   const { canAccess } = useRoleBasedAccess();
+  
+  // Find operation from store or load it
+  let operation = reliefStore.operationById(operationId);
 
   useEffect(() => {
-    loadOperation();
+    // Set as current operation
+    reliefStore.setCurrentOperation(operationId)
+    
+    // If not in store, load it
+    if (!operation) {
+      loadOperation();
+    }
   }, [operationId]);
 
   const loadOperation = async () => {
-    setLoading(true);
+    reliefStore.setLoading(true)
+    reliefStore.setError(null)
     try {
       const data = await operationService.getOperationById(operationId);
-      setOperation(data);
+      reliefStore.addOperation(data as any)
     } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to load operation'
+      reliefStore.setError(message)
       console.error('Failed to load operation:', error);
     } finally {
-      setLoading(false);
+      reliefStore.setLoading(false)
     }
   };
 
@@ -50,7 +62,7 @@ export function OperationDetailScreen({ route, navigation }: any) {
         operation.id,
         newStatus
       );
-      setOperation(updated);
+      reliefStore.updateOperation(operation.id, updated as any)
       Alert.alert('Success', 'Operation status updated');
     } catch (error: any) {
       Alert.alert('Error', error.message || 'Failed to update status');
@@ -59,7 +71,7 @@ export function OperationDetailScreen({ route, navigation }: any) {
     }
   };
 
-  if (loading) {
+  if (reliefStore.isLoading) {
     return (
       <View style={styles.centerContainer}>
         <ActivityIndicator size="large" color={colors.primary} />
@@ -134,13 +146,13 @@ export function OperationDetailScreen({ route, navigation }: any) {
             <Text style={styles.sectionTitle}>Thông Tin Hoạt Động</Text>
             <Card>
               <View style={styles.metaRow}>
-                <Text style={styles.metaLabel}>Người dẫn đầu:</Text>
-                <Text style={styles.metaValue}>{operation.teamLead}</Text>
+                <Text style={styles.metaLabel}>Mức độ ưu tiên:</Text>
+                <Text style={styles.metaValue}>{operation.priority || 'Normal'}</Text>
               </View>
               <View style={[styles.metaRow, { marginTop: spacing.md }]}>
                 <Text style={styles.metaLabel}>Vị trí:</Text>
                 <Text style={styles.metaValue}>
-                  {operation.location.province || 'Unknown'}
+                  {operation.location.name || 'Unknown'}
                 </Text>
               </View>
               <View style={[styles.metaRow, { marginTop: spacing.md }]}>
@@ -160,25 +172,20 @@ export function OperationDetailScreen({ route, navigation }: any) {
             </Card>
           </View>
 
-          {/* Volunteers */}
+          {/* Team Members */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>
-              Tình Nguyện Viên ({operation.volunteers.length})
+              Thành Viên Đội ({operation.teamMembers.length})
             </Text>
             <TeamMemberList
-              members={operation.volunteers.map((name, index) => ({
-                id: `volunteer-${index}`,
-                name,
-                role: 'Tình Nguyện Viên',
-                status: 'active',
-              } as TeamMember))}
+              members={operation.teamMembers as any}
               operationName={operation.name}
             />
           </View>
 
           {/* Resources */}
           <View style={styles.section}>
-            <ResourceTrackingView resources={operation.resources} />
+            <ResourceTrackingView resources={operation.resources as any} />
           </View>
         </View>
       </ScrollView>
@@ -186,7 +193,7 @@ export function OperationDetailScreen({ route, navigation }: any) {
       {/* Status Update Dialog */}
       {showStatusDialog && (
         <StatusUpdateDialog
-          operation={operation}
+          operation={operation as any}
           onSelect={handleStatusUpdate}
           onClose={() => setShowStatusDialog(false)}
           isUpdating={updating}

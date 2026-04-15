@@ -8,6 +8,8 @@ export { Input, type InputProps } from "./Input"
 export { Stack, Box, type StackProps } from "./Stack"
 export { SafeAreaWrapper, type SafeAreaWrapperProps } from "./SafeAreaWrapper"
 export { Loading, type LoadingProps, type LoadingSize } from "./Loading"
+export { Select, type SelectProps, type SelectOption } from "./Select"
+export { DatePicker, type DatePickerProps } from "./DatePicker"
 
 // Legacy component exports (for backward compatibility during migration)
 export { Button as ButtonLegacy } from "../Button"

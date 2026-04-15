@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView, SafeAreaView } from 'react-native';
-import { useAuth } from '../hooks/useAuth';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import { useAuth } from '../../../lib/hooks/useAuth';
+import { SafeAreaWrapper } from '../../../components/design-system/SafeAreaWrapper';
 
 interface FormErrors {
   email?: string;
@@ -14,7 +15,8 @@ export function RegisterScreen({ navigation }: any) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
-  const { register, isLoading, error: apiError } = useAuth();
+  const auth = useAuth();
+  const { isLoading, error: apiError } = auth;
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -57,14 +59,14 @@ export function RegisterScreen({ navigation }: any) {
     if (!validate()) return;
 
     try {
-      await register(formData.email, formData.password, formData.name);
+      await auth.register(formData.email, formData.password, formData.name);
     } catch (error) {
       console.error('Registration failed:', error);
     }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaWrapper style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <TouchableOpacity onPress={() => navigation?.goBack()} style={styles.backButton}>
           <Text style={styles.backButtonText}>← Quay lại</Text>
@@ -177,7 +179,7 @@ export function RegisterScreen({ navigation }: any) {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </SafeAreaWrapper>
   );
 }
 
