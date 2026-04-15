@@ -113,7 +113,7 @@ export function ProfileScreen({ navigation }: any) {
             <Text style={styles.profileName}>{user.name}</Text>
             <Text style={styles.profileEmail}>{user.email}</Text>
             <View style={styles.rolesBadge}>
-              {user.roles.map((role) => (
+              {user.roles.map((role: string) => (
                 <Text key={role} style={styles.roleBadge}>
                   {role}
                 </Text>

@@ -121,13 +121,13 @@ export function NotificationsScreen({ navigation }: any) {
       onPress={() => handleMarkAsRead(item.id)}
       activeOpacity={0.7}
     >
-      <Card style={[styles.notificationCard, !item.read && styles.unreadCard]}>
+      <Card style={item.read ? styles.notificationCard : [styles.notificationCard, styles.unreadCard]}>
         <View style={styles.notificationContent}>
           <View style={styles.iconContainer}>
             <Text style={styles.icon}>{getTypeIcon(item.type)}</Text>
           </View>
           <View style={styles.textContainer}>
-            <Text style={[styles.notificationTitle, !item.read && styles.unreadTitle]}>
+            <Text style={item.read ? styles.notificationTitle : [styles.notificationTitle, styles.unreadTitle]}>
               {item.title}
             </Text>
             <Text style={styles.message} numberOfLines={2}>
