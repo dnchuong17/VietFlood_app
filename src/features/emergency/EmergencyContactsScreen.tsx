@@ -286,6 +286,7 @@ export function EmergencyContactsScreen({ navigation }: any) {
       {/* Emergency Alert Dialog */}
       {showEmergencyAlert && (
         <ConfirmDialog
+          visible={showEmergencyAlert}
           title="Xác Nhận Gửi Tín Hiệu SOS"
           message="Bạn có chắc chắn muốn gửi tín hiệu SOS? Trung tâm cứu trợ gần nhất sẽ được thông báo về vị trí và tình trạng của bạn."
           onConfirm={handleSendSOS}
