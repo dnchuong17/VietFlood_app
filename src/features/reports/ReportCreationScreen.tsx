@@ -214,10 +214,7 @@ export function ReportCreationScreen({ navigation }: any) {
           <View style={styles.formGroup}>
             <Text style={styles.label}>Vị Trí *</Text>
             <Card
-              style={[
-                styles.locationCard,
-                location ? styles.locationCardSet : {},
-              ]}
+              style={location ? { ...styles.locationCard, ...styles.locationCardSet } : styles.locationCard}
             >
               {location ? (
                 <>

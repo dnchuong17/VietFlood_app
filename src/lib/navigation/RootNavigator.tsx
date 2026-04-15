@@ -94,7 +94,6 @@ function ProtectedStack() {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        animationEnabled: true,
       }}
     >
       <Stack.Group>

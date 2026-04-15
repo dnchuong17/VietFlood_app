@@ -261,7 +261,7 @@ function RouteListItem({ route, isSelected, onPress }: RouteListItemProps) {
   return (
     <TouchableOpacity onPress={onPress}>
       <Card
-        style={isSelected ? [styles.routeItem, styles.routeItemSelected] : styles.routeItem}
+        style={isSelected ? { ...styles.routeItem, ...styles.routeItemSelected } : styles.routeItem}
       >
         <View style={styles.routeItemContent}>
           <View style={styles.routeItemInfo}>

@@ -62,23 +62,23 @@ export function HomeScreen() {
       </View>
 
       {/* Stats Grid - Responsive */}
-      <View style={isTablet ? [styles.statsGrid, styles.statsGridTablet] : styles.statsGrid}>
-        <Card style={isTablet ? [styles.statCard, { flex: 0.48 }] : styles.statCard}>
+      <View style={isTablet ? { ...styles.statsGrid, ...styles.statsGridTablet } : styles.statsGrid}>
+        <Card style={isTablet ? { ...styles.statCard, flex: 0.48 } : styles.statCard}>
           <Text style={styles.statValue}>{stats.activeOperations}</Text>
           <Text style={styles.statLabel}>Hoạt Động Cứu Trợ</Text>
         </Card>
-        <Card style={isTablet ? [styles.statCard, { flex: 0.48 }] : styles.statCard}>
+        <Card style={isTablet ? { ...styles.statCard, flex: 0.48 } : styles.statCard}>
           <Text style={styles.statValue}>{stats.reportsToday}</Text>
           <Text style={styles.statLabel}>Báo Cáo Hôm Nay</Text>
         </Card>
       </View>
 
-      <View style={isTablet ? [styles.statsGrid, styles.statsGridTablet] : styles.statsGrid}>
-        <Card style={isTablet ? [styles.statCard, { flex: 0.48 }] : styles.statCard}>
+      <View style={isTablet ? { ...styles.statsGrid, ...styles.statsGridTablet } : styles.statsGrid}>
+        <Card style={isTablet ? { ...styles.statCard, flex: 0.48 } : styles.statCard}>
           <Text style={styles.statValue}>{stats.volunteerCount}</Text>
           <Text style={styles.statLabel}>Tình Nguyện Viên</Text>
         </Card>
-        <Card style={isTablet ? [styles.statCard, { flex: 0.48 }] : styles.statCard}>
+        <Card style={isTablet ? { ...styles.statCard, flex: 0.48 } : styles.statCard}>
           <Text style={styles.statValue}>{stats.affectedAreas}</Text>
           <Text style={styles.statLabel}>Khu Vực Bị Ảnh Hưởng</Text>
         </Card>

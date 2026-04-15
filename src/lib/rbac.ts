@@ -2,9 +2,9 @@ import { useAuth } from '../features/auth/hooks/useAuth';
 
 export type UserRole = 'user' | 'relief_worker' | 'admin' | 'moderator';
 
-interface RolePermissions {
+type RolePermissions = {
   [key in UserRole]: string[];
-}
+};
 
 const rolePermissions: RolePermissions = {
   user: ['view_reports', 'create_report', 'view_home'],
