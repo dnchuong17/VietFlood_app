@@ -1,0 +1,58 @@
+{
+  "cli": {
+    "version": ">= 8.0.0",
+    "promptToConfigurePushNotifications": false
+  },
+  "build": {
+    "development": {
+      "android": {
+        "buildType": "apk",
+        "development": true,
+        "node": "20.11.0"
+      },
+      "ios": {
+        "distribution": "internal",
+        "node": "20.11.0"
+      }
+    },
+    "preview": {
+      "android": {
+        "buildType": "apk",
+        "node": "20.11.0"
+      },
+      "ios": {
+        "distribution": "internal",
+        "provisioning": true,
+        "node": "20.11.0"
+      }
+    },
+    "production": {
+      "android": {
+        "buildType": "aab",
+        "releaseChannel": "production",
+        "node": "20.11.0",
+        "keystore": {
+          "keystorePath": "./vietflood-release.keystore",
+          "keystorePassword": "$KEYSTORE_PASSWORD",
+          "keyAlias": "vietflood-key",
+          "keyPassword": "$KEY_PASSWORD"
+        }
+      },
+      "ios": {
+        "distribution": "app-store",
+        "provisioning": true,
+        "node": "20.11.0"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "ascProvider": "$iOS_ASC_PROVIDER"
+      },
+      "android": {
+        "serviceAccount": "$ANDROID_SERVICE_ACCOUNT"
+      }
+    }
+  }
+}
