@@ -18,10 +18,10 @@
     }
   },
   "include": [
-    "**/*.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
+    "src/**/*.d.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "src-rn-backup", "src-nextjs", ".next"]
 }
